@@ -14,7 +14,12 @@ const ConnectGmail = () => {
     if (!backendUrl.endsWith('/api')) {
       backendUrl += '/api';
     }
-    window.location.href = `${backendUrl}/gmail/connect`;
+    const token = localStorage.getItem('mailmind_token');
+    const connectUrl = token
+      ? `${backendUrl}/gmail/connect?token=${encodeURIComponent(token)}`
+      : `${backendUrl}/gmail/connect`;
+
+    window.location.href = connectUrl;
   };
 
   return (
