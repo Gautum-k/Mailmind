@@ -1,10 +1,25 @@
 import axios from 'axios';
 
-const currentHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-const defaultBaseUrl = `http://${currentHost}:5001/api`;
+const getApiBaseUrl = () => {
+  const currentHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+  const defaultBaseUrl = `http://${currentHost}:5001/api`;
+  const envUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
+  
+  let rawUrl = (envUrl && envUrl.trim()) ? envUrl.trim() : defaultBaseUrl;
+  
+  // Remove all trailing slashes
+  rawUrl = rawUrl.replace(/\/+$/, '');
+
+  // Guarantee ending with exactly /api (without duplicating /api/api)
+  if (!rawUrl.endsWith('/api')) {
+    rawUrl += '/api';
+  }
+
+  return rawUrl;
+};
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || defaultBaseUrl,
+  baseURL: getApiBaseUrl(),
   timeout: 10000, // 10s fetch timeout for production reliability
   withCredentials: true,
   headers: {

@@ -10,7 +10,10 @@ const ConnectGmail = () => {
   const handleConnect = () => {
     const currentHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
     const defaultBaseUrl = `http://${currentHost}:5001/api`;
-    const backendUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || defaultBaseUrl;
+    let backendUrl = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || defaultBaseUrl).trim().replace(/\/+$/, '');
+    if (!backendUrl.endsWith('/api')) {
+      backendUrl += '/api';
+    }
     window.location.href = `${backendUrl}/gmail/connect`;
   };
 
