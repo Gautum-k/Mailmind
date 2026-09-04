@@ -185,9 +185,16 @@ const getMe = async (req, res, next) => {
   try {
     if (mongoose.connection.readyState === 1) {
       const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+      const tokenExists = await GmailToken.exists({ user: req.user.id });
+      const userObj = user.toObject();
+      userObj.gmailConnected = Boolean(user.gmailConnected && tokenExists);
+
       return res.status(200).json({
         success: true,
-        data: user,
+        data: userObj,
       });
     } else {
       // In-memory fallback lookup
@@ -206,7 +213,7 @@ const getMe = async (req, res, next) => {
           _id: req.user.id,
           name: 'Demo User',
           email: 'user@example.com',
-          gmailConnected: true,
+          gmailConnected: false,
         },
       });
     }

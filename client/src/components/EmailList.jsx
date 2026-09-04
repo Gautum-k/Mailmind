@@ -15,6 +15,9 @@ const EmailList = ({
   selectedIds = [],
   onToggleSelect,
   onSelectAll,
+  nextPageToken = null,
+  onLoadMore = () => {},
+  isLoadingMore = false,
 }) => {
   if (isError) {
     return (
@@ -224,6 +227,26 @@ const EmailList = ({
             </div>
           );
         })}
+
+        {/* Pagination Load More Button */}
+        {nextPageToken && (
+          <div className="p-4 text-center border-t border-slate-800/40">
+            <button
+              onClick={onLoadMore}
+              disabled={isLoadingMore}
+              className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-semibold text-indigo-400 border border-slate-800 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+            >
+              {isLoadingMore ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span>Loading more messages...</span>
+                </>
+              ) : (
+                <span>Load More Messages</span>
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

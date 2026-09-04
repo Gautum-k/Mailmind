@@ -2,18 +2,14 @@ import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Mail, ShieldCheck, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { getApiBaseUrl } from '../api/axios';
 
 const ConnectGmail = () => {
   const { user, gmailConnected } = useAuth();
   const navigate = useNavigate();
 
   const handleConnect = () => {
-    const currentHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-    const defaultBaseUrl = `http://${currentHost}:5001/api`;
-    let backendUrl = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || defaultBaseUrl).trim().replace(/\/+$/, '');
-    if (!backendUrl.endsWith('/api')) {
-      backendUrl += '/api';
-    }
+    const backendUrl = getApiBaseUrl();
     const token = localStorage.getItem('mailmind_token');
     const connectUrl = token
       ? `${backendUrl}/gmail/connect?token=${encodeURIComponent(token)}`

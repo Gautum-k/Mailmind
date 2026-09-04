@@ -42,7 +42,7 @@ const protect = async (req, res, next) => {
       _id: decoded.id,
       name: 'Demo User',
       email: 'tester@mailmind.dev',
-      gmailConnected: true,
+      gmailConnected: false,
     };
     next();
   } catch (error) {

@@ -3,6 +3,25 @@ const gmailService = require('../services/gmailService');
 const { buildMimeMessage, buildReplyMimeMessage } = require('../utils/mimeBuilder');
 const { logActivity } = require('./activityController');
 
+// Helper to handle authentication & token errors with clean 401 responses
+const handleControllerError = (error, res, next) => {
+  if (
+    error.statusCode === 401 ||
+    (error.message &&
+      (error.message.includes('not connected') ||
+        error.message.includes('expired') ||
+        error.message.includes('authorization') ||
+        error.message.includes('invalid_grant')))
+  ) {
+    return res.status(401).json({
+      success: false,
+      connected: false,
+      message: error.message || 'Gmail connection or authorization required.',
+    });
+  }
+  next(error);
+};
+
 // @desc    Get list of emails from Gmail API
 // @route   GET /api/emails
 // @access  Private
@@ -11,13 +30,20 @@ const getEmails = async (req, res, next) => {
     const auth = await getAuthenticatedClient(req.user.id);
     const { q, pageToken, label = 'INBOX', maxResults = 20 } = req.query;
 
-    let labelIds = [label.toUpperCase()];
-    if (label.toUpperCase() === 'ALL') {
+    const labelUpper = label ? label.toUpperCase() : 'INBOX';
+    let labelIds = [labelUpper];
+    let searchQuery = q ? q.trim() : '';
+
+    if (labelUpper === 'ALL') {
       labelIds = [];
+    } else if (labelUpper === 'ARCHIVE') {
+      // Archive in Gmail API is queried by excluding INBOX
+      labelIds = [];
+      searchQuery = searchQuery ? `${searchQuery} -inbox` : '-inbox';
     }
 
     const data = await gmailService.listMessages(auth, {
-      q,
+      q: searchQuery,
       pageToken,
       maxResults,
       labelIds,
@@ -30,7 +56,7 @@ const getEmails = async (req, res, next) => {
       resultSizeEstimate: data.resultSizeEstimate,
     });
   } catch (error) {
-    next(error);
+    handleControllerError(error, res, next);
   }
 };
 
@@ -47,7 +73,7 @@ const getEmail = async (req, res, next) => {
       data: email,
     });
   } catch (error) {
-    next(error);
+    handleControllerError(error, res, next);
   }
 };
 
@@ -64,7 +90,7 @@ const getThread = async (req, res, next) => {
       data: thread,
     });
   } catch (error) {
-    next(error);
+    handleControllerError(error, res, next);
   }
 };
 
@@ -86,7 +112,7 @@ const toggleReadStatus = async (req, res, next) => {
       data: modified,
     });
   } catch (error) {
-    next(error);
+    handleControllerError(error, res, next);
   }
 };
 
@@ -116,7 +142,7 @@ const toggleStarStatus = async (req, res, next) => {
       data: modified,
     });
   } catch (error) {
-    next(error);
+    handleControllerError(error, res, next);
   }
 };
 
@@ -145,7 +171,7 @@ const archiveEmail = async (req, res, next) => {
       data: modified,
     });
   } catch (error) {
-    next(error);
+    handleControllerError(error, res, next);
   }
 };
 
@@ -171,7 +197,7 @@ const deleteEmail = async (req, res, next) => {
       data: trashed,
     });
   } catch (error) {
-    next(error);
+    handleControllerError(error, res, next);
   }
 };
 
@@ -208,7 +234,7 @@ const sendEmail = async (req, res, next) => {
       data: sent,
     });
   } catch (error) {
-    next(error);
+    handleControllerError(error, res, next);
   }
 };
 

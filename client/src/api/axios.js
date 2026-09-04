@@ -1,21 +1,25 @@
 import axios from 'axios';
 
-const getApiBaseUrl = () => {
-  const currentHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-  const defaultBaseUrl = `http://${currentHost}:5001/api`;
+export const getApiBaseUrl = () => {
   const envUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
-  
-  let rawUrl = (envUrl && envUrl.trim()) ? envUrl.trim() : defaultBaseUrl;
-  
-  // Remove all trailing slashes
-  rawUrl = rawUrl.replace(/\/+$/, '');
-
-  // Guarantee ending with exactly /api (without duplicating /api/api)
-  if (!rawUrl.endsWith('/api')) {
-    rawUrl += '/api';
+  if (envUrl && envUrl.trim()) {
+    let rawUrl = envUrl.trim().replace(/\/+$/, '');
+    if (!rawUrl.endsWith('/api')) {
+      rawUrl += '/api';
+    }
+    return rawUrl;
   }
 
-  return rawUrl;
+  const currentHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+  const protocol = typeof window !== 'undefined' ? window.location.protocol : 'http:';
+
+  // If local development, default to port 5001
+  if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
+    return `http://${currentHost}:5001/api`;
+  }
+
+  // In production without explicit VITE_API_URL, fallback to domain /api
+  return `${protocol}//${currentHost}/api`;
 };
 
 const api = axios.create({

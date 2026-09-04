@@ -104,17 +104,19 @@ const gmailCallback = async (req, res, next) => {
       console.warn('[UserInfo Fetch Warning]', infoErr.message);
     }
 
-    // Upsert GmailToken for user
+    // Construct token update object cleanly preserving existing refreshToken if omitted by Google
+    const tokenUpdate = {
+      user: userId,
+      accessToken: tokens.access_token,
+      expiryDate: tokens.expiry_date,
+      scope: tokens.scope,
+    };
+    if (userEmail) tokenUpdate.email = userEmail;
+    if (tokens.refresh_token) tokenUpdate.refreshToken = tokens.refresh_token;
+
     await GmailToken.findOneAndUpdate(
       { user: userId },
-      {
-        user: userId,
-        accessToken: tokens.access_token,
-        refreshToken: tokens.refresh_token,
-        expiryDate: tokens.expiry_date,
-        scope: tokens.scope,
-        email: userEmail,
-      },
+      tokenUpdate,
       { upsert: true, new: true, runValidators: true }
     );
 

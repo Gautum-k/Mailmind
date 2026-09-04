@@ -29,6 +29,13 @@ const Dashboard = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [extraEmails, setExtraEmails] = useState([]);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // Reset pagination when active label or active search changes
+  React.useEffect(() => {
+    setExtraEmails([]);
+  }, [activeLabel, activeSearch]);
 
   // 1. Fetch Email List via TanStack Query
   const {
@@ -43,7 +50,27 @@ const Dashboard = () => {
     retry: 1,
   });
 
-  const emails = emailData?.data || [];
+  const baseEmails = emailData?.data || [];
+  const emails = [...baseEmails, ...extraEmails];
+
+  const handleLoadMore = async () => {
+    if (!emailData?.nextPageToken || isLoadingMore) return;
+    try {
+      setIsLoadingMore(true);
+      const res = await fetchEmails({
+        label: activeLabel,
+        q: activeSearch,
+        pageToken: emailData.nextPageToken,
+      });
+      if (res.data && res.data.length > 0) {
+        setExtraEmails((prev) => [...prev, ...res.data]);
+      }
+    } catch (err) {
+      console.warn('Failed to load next page:', err);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   // 2. Fetch Selected Email Detail
   const { data: detailData, isLoading: isDetailLoading } = useQuery({
@@ -171,6 +198,9 @@ const Dashboard = () => {
                   selectedIds={selectedIds}
                   onToggleSelect={handleToggleSelect}
                   onSelectAll={handleSelectAll}
+                  nextPageToken={emailData?.nextPageToken}
+                  onLoadMore={handleLoadMore}
+                  isLoadingMore={isLoadingMore}
                 />
               </div>
 

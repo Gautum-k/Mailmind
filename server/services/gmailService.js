@@ -94,6 +94,19 @@ const formatMessage = (msg) => {
   };
 };
 
+// Helper for exponential backoff retry on transient/rate-limit Google API errors
+const fetchWithRetry = async (fn, retries = 2, delay = 500) => {
+  try {
+    return await fn();
+  } catch (err) {
+    if (retries > 0 && (err.code === 429 || (err.status && err.status >= 500))) {
+      await new Promise((res) => setTimeout(res, delay));
+      return fetchWithRetry(fn, retries - 1, delay * 2);
+    }
+    throw err;
+  }
+};
+
 // 1. List messages live from Gmail API
 const listMessages = async (auth, { q = '', pageToken = '', maxResults = 20, labelIds = ['INBOX'] }) => {
   const gmail = google.gmail({ version: 'v1', auth });
@@ -103,25 +116,47 @@ const listMessages = async (auth, { q = '', pageToken = '', maxResults = 20, lab
     maxResults: parseInt(maxResults, 10),
   };
 
-  if (q) params.q = q;
-  if (pageToken) params.pageToken = pageToken;
-  if (labelIds && labelIds.length > 0 && !q) params.labelIds = labelIds;
+  if (q && q.trim()) params.q = q.trim();
+  if (pageToken && pageToken.trim()) params.pageToken = pageToken.trim();
+  
+  // Preserve labelIds filter unless explicitly empty or ALL
+  if (labelIds && Array.isArray(labelIds) && labelIds.length > 0) {
+    params.labelIds = labelIds;
+  }
 
   const res = await gmail.users.messages.list(params);
   const messagesList = res.data.messages || [];
 
-  // Fetch detail format for returned message IDs in parallel batch
+  // Fetch metadata format for returned message IDs in parallel batch with retry & fallback
   const messages = await Promise.all(
     messagesList.map(async (item) => {
       try {
-        const detail = await gmail.users.messages.get({
-          userId: 'me',
-          id: item.id,
-          format: 'full',
-        });
+        const detail = await fetchWithRetry(() =>
+          gmail.users.messages.get({
+            userId: 'me',
+            id: item.id,
+            format: 'metadata',
+            metadataHeaders: ['From', 'To', 'Cc', 'Bcc', 'Subject', 'Date', 'Message-ID', 'References'],
+          })
+        );
         return formatMessage(detail.data);
       } catch (err) {
-        return null;
+        console.warn(`[Gmail API Warning] Failed to fetch message metadata for ${item.id}:`, err.message);
+        return {
+          id: item.id,
+          threadId: item.threadId,
+          labelIds: [],
+          snippet: 'Message preview unavailable',
+          from: 'Unknown Sender',
+          to: '',
+          cc: '',
+          bcc: '',
+          subject: '(Subject Unavailable)',
+          date: '',
+          isUnread: false,
+          isStarred: false,
+          isTrash: false,
+        };
       }
     })
   );

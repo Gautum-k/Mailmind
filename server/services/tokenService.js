@@ -2,14 +2,24 @@ const GmailToken = require('../models/GmailToken');
 const User = require('../models/User');
 const { getOAuth2Client } = require('../config/googleClient');
 
+const mongoose = require('mongoose');
+
 /**
  * Gets an authenticated OAuth2 client for a given user.
  * Automatically refreshes access tokens using stored Google OAuth refresh tokens.
  */
 const getAuthenticatedClient = async (userId) => {
+  if (!userId || (mongoose.connection.readyState === 1 && !mongoose.Types.ObjectId.isValid(userId))) {
+    const authErr = new Error('Gmail account not connected. Please connect your Gmail account via OAuth 2.0.');
+    authErr.statusCode = 401;
+    throw authErr;
+  }
+
   const tokenDoc = await GmailToken.findOne({ user: userId });
   if (!tokenDoc) {
-    throw new Error('Gmail account not connected. Please connect your Gmail account via OAuth 2.0.');
+    const authErr = new Error('Gmail account not connected. Please connect your Gmail account via OAuth 2.0.');
+    authErr.statusCode = 401;
+    throw authErr;
   }
 
   const oauth2Client = getOAuth2Client();
@@ -51,8 +61,12 @@ const getAuthenticatedClient = async (userId) => {
       oauth2Client.setCredentials(credentials);
     } catch (refreshErr) {
       console.error('[OAuth Refresh Error]', refreshErr.message);
-      await User.findByIdAndUpdate(userId, { gmailConnected: false });
-      throw new Error('Gmail authorization expired. Please reconnect your Gmail account.');
+      if (mongoose.Types.ObjectId.isValid(userId)) {
+        await User.findByIdAndUpdate(userId, { gmailConnected: false });
+      }
+      const expiredErr = new Error('Gmail authorization expired. Please reconnect your Gmail account.');
+      expiredErr.statusCode = 401;
+      throw expiredErr;
     }
   }
 
