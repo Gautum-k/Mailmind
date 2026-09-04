@@ -10,6 +10,7 @@ import ActivityLog from './pages/ActivityLog';
 import Templates from './pages/Templates';
 import Settings from './pages/Settings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          <Route path="/terms" element={<TermsOfService />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />

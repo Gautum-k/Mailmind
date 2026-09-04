@@ -105,12 +105,19 @@ const ConnectGmail = () => {
             </div>
           )}
 
-          <div className="mt-6 text-center border-t border-slate-800/80 pt-4">
+          <div className="mt-6 text-center border-t border-slate-800/80 pt-4 flex justify-center space-x-4 text-xs text-slate-400">
+            <Link
+              to="/terms"
+              className="hover:text-slate-200 underline font-medium transition-colors"
+            >
+              Terms of Service
+            </Link>
+            <span>&bull;</span>
             <Link
               to="/privacy"
-              className="text-xs text-slate-400 hover:text-slate-200 underline font-medium transition-colors"
+              className="hover:text-slate-200 underline font-medium transition-colors"
             >
-              Read MailMind Privacy Policy & Data Security Statement
+              Privacy Policy
             </Link>
           </div>
         </div>

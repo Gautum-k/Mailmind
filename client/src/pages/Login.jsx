@@ -129,6 +129,10 @@ const Login = () => {
             </p>
             <p className="text-xs text-slate-500">
               By using MailMind, you agree to our{' '}
+              <Link to="/terms" className="text-slate-400 hover:text-slate-200 underline">
+                Terms of Service
+              </Link>{' '}
+              &amp;{' '}
               <Link to="/privacy" className="text-slate-400 hover:text-slate-200 underline">
                 Privacy Policy
               </Link>
