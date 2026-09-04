@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Mail, ShieldCheck, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getApiBaseUrl } from '../api/axios';
 
 const ConnectGmail = () => {
@@ -104,6 +104,15 @@ const ConnectGmail = () => {
               </button>
             </div>
           )}
+
+          <div className="mt-6 text-center border-t border-slate-800/80 pt-4">
+            <Link
+              to="/privacy"
+              className="text-xs text-slate-400 hover:text-slate-200 underline font-medium transition-colors"
+            >
+              Read MailMind Privacy Policy & Data Security Statement
+            </Link>
+          </div>
         </div>
       </div>
     </div>

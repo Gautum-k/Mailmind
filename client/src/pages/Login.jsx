@@ -117,7 +117,7 @@ const Login = () => {
             </div>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center space-y-2">
             <p className="text-sm text-slate-400">
               Don't have an account?{' '}
               <Link
@@ -125,6 +125,12 @@ const Login = () => {
                 className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
               >
                 Create one now
+              </Link>
+            </p>
+            <p className="text-xs text-slate-500">
+              By using MailMind, you agree to our{' '}
+              <Link to="/privacy" className="text-slate-400 hover:text-slate-200 underline">
+                Privacy Policy
               </Link>
             </p>
           </div>
