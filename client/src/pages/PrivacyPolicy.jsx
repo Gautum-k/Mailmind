@@ -12,6 +12,10 @@ import {
   CheckCircle2,
   ExternalLink,
   Trash2,
+  Server,
+  UserX,
+  Clock,
+  ShieldAlert,
 } from 'lucide-react';
 
 const PrivacyPolicy = () => {
@@ -58,7 +62,7 @@ const PrivacyPolicy = () => {
             Privacy Policy & Data Security
           </h1>
           <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto">
-            Last Updated: September 4, 2026 &bull; MailMind is committed to transparent, secure, and user-first data practices.
+            Effective Date: September 4, 2026 &bull; MailMind is committed to transparent, secure, and user-first data practices.
           </p>
         </div>
 
@@ -70,7 +74,7 @@ const PrivacyPolicy = () => {
             </div>
             <h3 className="text-sm font-bold text-white">Zero Data Sales</h3>
             <p className="text-xs text-slate-400">
-              We never sell, rent, or monetize your personal information or email data to advertisers or third parties.
+              We never sell, rent, share, or monetize your Gmail data or personal information with advertisers or third parties.
             </p>
           </div>
 
@@ -80,7 +84,7 @@ const PrivacyPolicy = () => {
             </div>
             <h3 className="text-sm font-bold text-white">No Email Caching</h3>
             <p className="text-xs text-slate-400">
-              Emails are fetched live from Gmail API for real-time display and are never stored in a database.
+              Emails are fetched live from Gmail API on-demand and are never stored or cached in a database.
             </p>
           </div>
 
@@ -88,7 +92,7 @@ const PrivacyPolicy = () => {
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
               <KeyRound className="w-5 h-5" />
             </div>
-            <h3 className="text-sm font-bold text-white">Full User Control</h3>
+            <h3 className="text-sm font-bold text-white">Full Access Control</h3>
             <p className="text-xs text-slate-400">
               Disconnect your account or revoke Google OAuth permissions anytime with a single click.
             </p>
@@ -107,7 +111,7 @@ const PrivacyPolicy = () => {
               MailMind ("we", "our", or "us") provides an AI-enhanced email productivity platform designed to help users summarize messages, organize threads, search in natural language, and draft replies efficiently.
             </p>
             <p>
-              This Privacy Policy explains how we collect, use, process, and protect your information when you access our application at <span className="text-indigo-300 font-mono text-xs">https://mailmind.onrender.com</span> or associated client interfaces. By connecting your Google Gmail account, you agree to the practices outlined in this document.
+              This Privacy Policy explains how we collect, use, process, store, and protect your information when you access our application at <span className="text-indigo-300 font-mono text-xs">https://mailmind.onrender.com</span> or associated client interfaces. By connecting your Google Gmail account, you agree to the practices outlined in this document.
             </p>
           </section>
 
@@ -117,25 +121,48 @@ const PrivacyPolicy = () => {
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-white flex items-center space-x-2">
               <span className="text-indigo-400">2.</span>
-              <span>Gmail API Data & Information We Access</span>
+              <span>Exact Gmail OAuth Scopes Requested & Permissions</span>
             </h2>
             <p>
-              MailMind connects directly to Google services using official <strong>Google OAuth 2.0</strong> authorization. We request access strictly to the minimum necessary Google API scopes to provide core email management functionality:
+              MailMind connects to Google services strictly via official <strong>Google OAuth 2.0</strong> authorization. Below is the exact list of Google API permissions requested and a plain-language explanation of how each is used:
             </p>
-            <ul className="list-disc pl-5 space-y-1 text-xs text-slate-300">
-              <li>
-                <strong>Profile & Identity</strong> (<code className="text-indigo-300">userinfo.email</code>, <code className="text-indigo-300">userinfo.profile</code>): Primary email address and user display name to authenticate your session.
-              </li>
-              <li>
-                <strong>Read Access</strong> (<code className="text-indigo-300">gmail.readonly</code>): Email message headers (From, To, Subject, Date), snippets, thread details, labels, and text/HTML body content for inbox display and AI features.
-              </li>
-              <li>
-                <strong>Modify Access</strong> (<code className="text-indigo-300">gmail.modify</code>): Modifying message labels (marking read/unread, starring, archiving, moving to trash) when requested by you.
-              </li>
-              <li>
-                <strong>Send Access</strong> (<code className="text-indigo-300">gmail.send</code>): Transmitting new email compositions or thread replies composed or confirmed by you.
-              </li>
-            </ul>
+            <div className="space-y-3 pt-2">
+              <div className="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs font-bold text-indigo-400 font-mono">https://www.googleapis.com/auth/gmail.readonly</span>
+                </div>
+                <p className="text-xs text-slate-300">
+                  <strong>Read-only access:</strong> Used to fetch and display your email messages, headers (From, To, Subject, Date), snippets, thread structures, and message body text/HTML inside your MailMind dashboard, as well as to power natural language search and AI email summarization.
+                </p>
+              </div>
+
+              <div className="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs font-bold text-indigo-400 font-mono">https://www.googleapis.com/auth/gmail.modify</span>
+                </div>
+                <p className="text-xs text-slate-300">
+                  <strong>Label & Status modification:</strong> Used to add or remove message labels (such as starring/unstarring, archiving by removing INBOX label, marking messages as read/unread, or moving messages to trash) when you perform those actions in the app.
+                </p>
+              </div>
+
+              <div className="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs font-bold text-indigo-400 font-mono">https://www.googleapis.com/auth/gmail.send</span>
+                </div>
+                <p className="text-xs text-slate-300">
+                  <strong>Send emails:</strong> Used exclusively to transmit new emails or thread replies that you explicitly compose, review, and confirm inside MailMind.
+                </p>
+              </div>
+
+              <div className="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs font-bold text-indigo-400 font-mono">userinfo.email &amp; userinfo.profile</span>
+                </div>
+                <p className="text-xs text-slate-300">
+                  <strong>Identity verification:</strong> Used to verify your primary Gmail address and display name for session authentication and account creation.
+                </p>
+              </div>
+            </div>
           </section>
 
           <hr className="border-slate-800/80" />
@@ -144,27 +171,25 @@ const PrivacyPolicy = () => {
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-white flex items-center space-x-2">
               <span className="text-indigo-400">3.</span>
-              <span>How We Use Your Gmail Information</span>
+              <span>Data Collection, Ephemeral Handling & Storage Location</span>
             </h2>
-            <p>We use the data accessed from Gmail exclusively for the following operational purposes:</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800/60 flex items-start space-x-2.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-xs">Rendering your inbox folders, email threads, and search results in real time.</span>
-              </div>
-              <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800/60 flex items-start space-x-2.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-xs">Generating AI summaries, key action item extractions, and reply drafts via Gemini AI.</span>
-              </div>
-              <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800/60 flex items-start space-x-2.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-xs">Executing your explicit email actions (starring, archiving, sending, or deleting).</span>
-              </div>
-              <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800/60 flex items-start space-x-2.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-xs">Translating natural language queries into valid Gmail API search parameters.</span>
-              </div>
-            </div>
+            <p>
+              MailMind strictly adheres to data minimization and privacy-first principles:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-xs">
+              <li>
+                <strong>No Email Caching or Storage:</strong> We do <em>not</em> store, archive, or cache your actual email body text, HTML contents, attachments, subject lines, or recipient lists in any database or file system. Email data is fetched live on-demand from Google's Gmail API and is discarded from memory immediately after rendering in your browser.
+              </li>
+              <li>
+                <strong>Data Retention Period:</strong> Live email content exists only temporarily in volatile server memory for the duration of the HTTP rendering request (fraction of a second).
+              </li>
+              <li>
+                <strong>OAuth Tokens Storage:</strong> Encrypted Google OAuth access tokens, refresh tokens, and expiration timestamps are stored securely in our MongoDB database strictly to maintain your active connection without requiring re-authentication on every page visit.
+              </li>
+              <li>
+                <strong>Operational Activity Logs:</strong> Minimal operational logs (e.g. action timestamp, action type such as "starred" or "sent", and email subject line) are stored to populate your personal Activity Log feature inside MailMind.
+              </li>
+            </ul>
           </section>
 
           <hr className="border-slate-800/80" />
@@ -173,22 +198,20 @@ const PrivacyPolicy = () => {
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-white flex items-center space-x-2">
               <span className="text-indigo-400">4.</span>
-              <span>Data Storage & Ephemeral Handling</span>
+              <span>No Third-Party Sharing, Sales, or Advertising</span>
             </h2>
-            <p>
-              MailMind adheres to strict data minimization principles:
-            </p>
-            <ul className="list-disc pl-5 space-y-2 text-xs">
-              <li>
-                <strong>No Email Database Storage</strong>: We do <em>not</em> store, archive, or cache your actual email messages, subject lines, body contents, or attachments in any persistent database. Email data is requested live from Gmail API on-demand and discarded immediately after rendering.
-              </li>
-              <li>
-                <strong>OAuth Tokens</strong>: Encrypted Google OAuth access and refresh tokens are stored securely in MongoDB strictly to maintain your authenticated connection without requiring you to log in repeatedly.
-              </li>
-              <li>
-                <strong>Activity Logs</strong>: Minimal operational logs (e.g. action timestamp, action type such as "starred" or "sent") are maintained for your personal Activity Log feature inside the platform.
-              </li>
-            </ul>
+            <div className="p-4 bg-emerald-950/30 border border-emerald-500/30 rounded-xl space-y-2 text-xs text-emerald-200">
+              <p className="font-semibold text-white flex items-center space-x-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span>Strict Prohibition on Data Sales & Advertising:</span>
+              </p>
+              <p>
+                MailMind <strong>NEVER SHARES, SELLS, RENTS, OR TRADES YOUR GMAIL DATA</strong> or personal information to third parties, data brokers, or advertising networks under any circumstances.
+              </p>
+              <p>
+                Your Gmail data is <strong>never used for serving advertisements</strong>, retargeting, building user profiles for commercial targeting, or training generalized artificial intelligence models.
+              </p>
+            </div>
           </section>
 
           <hr className="border-slate-800/80" />
@@ -197,7 +220,7 @@ const PrivacyPolicy = () => {
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-white flex items-center space-x-2">
               <span className="text-indigo-400">5.</span>
-              <span>Google Limited Use Disclosure Compliance</span>
+              <span>Google API Limited Use Disclosure Compliance</span>
             </h2>
             <div className="p-4 bg-indigo-950/40 border border-indigo-500/30 rounded-xl space-y-2 text-xs text-indigo-200">
               <p className="font-semibold text-white">Google API Services User Data Policy Notice:</p>
@@ -225,35 +248,27 @@ const PrivacyPolicy = () => {
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-white flex items-center space-x-2">
               <span className="text-indigo-400">6.</span>
-              <span>Disconnecting Gmail & Revoking Access</span>
+              <span>Data Security Measures</span>
             </h2>
-            <p>You maintain total control over your Gmail integration and can revoke access at any time:</p>
-            <div className="space-y-2 text-xs">
-              <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Trash2 className="w-4 h-4 text-red-400" />
-                  <span><strong>Inside MailMind:</strong> Go to <strong>Settings</strong> or <strong>Connect Gmail</strong> and click "Disconnect Gmail".</span>
-                </div>
-                <Link to="/settings" className="text-indigo-400 hover:underline font-semibold">Settings &rarr;</Link>
+            <p>We enforce industry-standard security protections to keep your connection safe:</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
+              <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-start space-x-2">
+                <Lock className="w-4 h-4 text-indigo-400 mt-0.5 flex-shrink-0" />
+                <span><strong>Encryption in Transit:</strong> All data transmitted between your browser, MailMind backend servers, and Google APIs is encrypted using TLS/HTTPS 1.3 protocols.</span>
               </div>
-              <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Lock className="w-4 h-4 text-purple-400" />
-                  <span><strong>Via Google Account:</strong> Visit your Google Security Settings page under Third-Party Apps.</span>
-                </div>
-                <a
-                  href="https://myaccount.google.com/permissions"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-indigo-400 hover:underline font-semibold inline-flex items-center"
-                >
-                  Google Permissions <ExternalLink className="w-3 h-3 ml-1" />
-                </a>
+              <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-start space-x-2">
+                <Server className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                <span><strong>Secure Token Handling:</strong> OAuth refresh tokens are encrypted at rest and accessed strictly through authenticated backend logic.</span>
+              </div>
+              <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-start space-x-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <span><strong>Session Protections:</strong> Authentication tokens are secured with HTTP-only cookies and Bearer JWT validation.</span>
+              </div>
+              <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-start space-x-2">
+                <Clock className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
+                <span><strong>Automatic Token Expiry:</strong> OAuth tokens proactively expire and refresh, reducing authorization exposure.</span>
               </div>
             </div>
-            <p className="text-xs text-slate-400">
-              Upon disconnection, stored OAuth tokens are permanently removed from our database and active API tokens are revoked with Google.
-            </p>
           </section>
 
           <hr className="border-slate-800/80" />
@@ -262,10 +277,106 @@ const PrivacyPolicy = () => {
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-white flex items-center space-x-2">
               <span className="text-indigo-400">7.</span>
+              <span>Disconnecting Gmail & Revoking Access</span>
+            </h2>
+            <p>You maintain 100% ownership and control over your Gmail integration. You can revoke access at any time through either of the following methods:</p>
+            <div className="space-y-2 text-xs">
+              <div className="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Trash2 className="w-4 h-4 text-red-400" />
+                  <span><strong>Inside MailMind:</strong> Go to <strong>Settings</strong> or <strong>Connect Gmail</strong> and click "Disconnect Gmail".</span>
+                </div>
+                <Link to="/settings" className="text-indigo-400 hover:underline font-semibold">Settings &rarr;</Link>
+              </div>
+              <div className="p-3.5 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Lock className="w-4 h-4 text-purple-400" />
+                  <span><strong>Via Google Permissions:</strong> Manage third-party app access on Google Account Permissions.</span>
+                </div>
+                <a
+                  href="https://myaccount.google.com/permissions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-400 hover:underline font-semibold inline-flex items-center"
+                >
+                  myaccount.google.com/permissions <ExternalLink className="w-3 h-3 ml-1" />
+                </a>
+              </div>
+            </div>
+            <p className="text-xs text-slate-400">
+              Upon disconnection inside MailMind, your stored OAuth tokens are immediately revoked with Google and purged permanently from our database.
+            </p>
+          </section>
+
+          <hr className="border-slate-800/80" />
+
+          {/* Section 8 */}
+          <section className="space-y-3">
+            <h2 className="text-lg font-bold text-white flex items-center space-x-2">
+              <span className="text-indigo-400">8.</span>
+              <span>User Rights & Account / Data Deletion Requests</span>
+            </h2>
+            <p>
+              You have the right to request access to, correction of, or permanent deletion of your MailMind account and personal data:
+            </p>
+            <div className="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2 text-xs">
+              <p>
+                To request complete account deletion, disconnect your Gmail integration and send an email request to <a href="mailto:ofcgautum2007@gmail.com" className="text-indigo-400 underline font-mono">ofcgautum2007@gmail.com</a> with the subject line <em>"Data Deletion Request"</em>.
+              </p>
+              <p>
+                All account profile records, preferences, and OAuth tokens associated with your email address will be purged from our database within 7 business days.
+              </p>
+            </div>
+          </section>
+
+          <hr className="border-slate-800/80" />
+
+          {/* Section 9 */}
+          <section className="space-y-3">
+            <h2 className="text-lg font-bold text-white flex items-center space-x-2">
+              <span className="text-indigo-400">9.</span>
+              <span>Children's Privacy Protection</span>
+            </h2>
+            <div className="p-4 bg-slate-900/60 rounded-xl border border-slate-800 space-y-2 text-xs">
+              <div className="flex items-center space-x-2 text-slate-200 font-semibold">
+                <UserX className="w-4 h-4 text-indigo-400" />
+                <span>Under 13 Restriction Notice:</span>
+              </div>
+              <p>
+                MailMind is an email productivity platform intended solely for individuals who are at least 13 years of age (or older, where required by local law).
+              </p>
+              <p>
+                We do not knowingly collect, solicit, or process personal data or Gmail access from children under 13. If we become aware that a user under 13 has connected an account, we will immediately revoke tokens and delete all associated user records.
+              </p>
+            </div>
+          </section>
+
+          <hr className="border-slate-800/80" />
+
+          {/* Section 10 */}
+          <section className="space-y-3">
+            <h2 className="text-lg font-bold text-white flex items-center space-x-2">
+              <span className="text-indigo-400">10.</span>
+              <span>Policy Updates & Changes</span>
+            </h2>
+            <p>
+              We may update this Privacy Policy from time to time to reflect changes in our service, regulatory requirements, or Google API policy updates.
+            </p>
+            <p className="text-xs text-slate-400">
+              When updates are published, we will revise the "Effective Date" at the top of this policy. For material changes affecting data usage or permissions, we will provide notice via the platform or through email.
+            </p>
+          </section>
+
+          <hr className="border-slate-800/80" />
+
+          {/* Section 11 */}
+          <section className="space-y-3">
+            <h2 className="text-lg font-bold text-white flex items-center space-x-2">
+              <span className="text-indigo-400">11.</span>
               <span>Contact Us</span>
             </h2>
             <p>
-              If you have any questions, concerns, or requests regarding this Privacy Policy or MailMind's data security practices, please contact our Data Protection Officer:
+              If you have any questions, concerns, or privacy requests regarding this Privacy Policy or MailMind's data security practices, please contact our Data Protection Officer:
             </p>
             <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl flex items-center space-x-3 text-slate-200 text-sm">
               <div className="w-10 h-10 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
@@ -287,9 +398,9 @@ const PrivacyPolicy = () => {
           <div className="flex justify-center space-x-4">
             <Link to="/privacy" className="text-slate-400 hover:text-slate-200">Privacy Policy</Link>
             <span>&bull;</span>
-            <Link to="/login" className="text-slate-400 hover:text-slate-200">Sign In</Link>
+            <Link to="/terms" className="text-slate-400 hover:text-slate-200">Terms of Service</Link>
             <span>&bull;</span>
-            <Link to="/signup" className="text-slate-400 hover:text-slate-200">Get Started</Link>
+            <Link to="/login" className="text-slate-400 hover:text-slate-200">Sign In</Link>
           </div>
         </footer>
       </main>
